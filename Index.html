@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Happy Birthday ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            margin-top: 100px;
+        }
+
+        h1 {
+            font-size: 50px;
+        }
+
+        p {
+            font-size: 20px;
+            margin: 20px;
+        }
+
+        button {
+            padding: 15px 25px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            background: white;
+            color: #ff4e73;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+            margin-top: 20px;
+        }
+
+        img {
+            width: 250px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Happy Birthday My Love 🎉</h1>
+    <p>You make my life beautiful every single day ❤️</p>
+
+    <button onclick="showSurprise()">Click for Surprise 💌</button>
+
+    <div id="surprise" class="hidden">
+        <p>I’m so lucky to have you in my life 💖</p>
+        <p>Thank you for being you… always 😊</p>
+        <p>Let’s make more memories together ✨</p>
+        <img src="https://i.imgur.com/4M7IWwP.jpeg" alt="Love Image">
+    </div>
+</div>
+
+<script>
+function showSurprise() {
+    document.getElementById("surprise").style.display = "block";
+}
+</script>
+
+</body>
+</html>
