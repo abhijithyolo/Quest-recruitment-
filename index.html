@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Happy Birthday ❤️</title>
+    <title>Loading...</title>
+
+    <!-- Disable preview -->
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="">
+    <meta name="twitter:card" content="none">
+
     <style>
         body {
             margin: 0;
@@ -13,16 +20,12 @@
         }
 
         .container {
-            margin-top: 100px;
+            margin-top: 80px;
+            padding: 20px;
         }
 
         h1 {
-            font-size: 50px;
-        }
-
-        p {
-            font-size: 20px;
-            margin: 20px;
+            font-size: 40px;
         }
 
         button {
@@ -33,33 +36,77 @@
             background: white;
             color: #ff4e73;
             cursor: pointer;
+            margin-top: 20px;
         }
 
         .hidden {
             display: none;
-            margin-top: 20px;
+            margin-top: 30px;
+        }
+
+        .message {
+            max-width: 600px;
+            margin: auto;
+            text-align: left;
+            line-height: 1.6;
+            font-size: 18px;
         }
 
         img {
-            width: 250px;
+            width: 260px;
             border-radius: 15px;
             margin-top: 20px;
         }
     </style>
 </head>
+
 <body>
 
 <div class="container">
-    <h1>Happy Birthday My Love 🎉</h1>
-    <p>You make my life beautiful every single day ❤️</p>
+    <h1>Happy Birthday ❤️</h1>
 
     <button onclick="showSurprise()">Click for Surprise 💌</button>
 
     <div id="surprise" class="hidden">
-        <p>I’m so lucky to have you in my life 💖</p>
-        <p>Thank you for being you… always 😊</p>
-        <p>Let’s make more memories together ✨</p>
-        <img src="https://i.imgur.com/4M7IWwP.jpeg" alt="Love Image">
+
+        <div class="message">
+            <p>
+                I don’t know how things became like this… but somewhere between all our random chats,
+                late-night talks, and everything you shared, you became really important to me.
+            </p>
+
+            <p>
+                I’ve seen you at your low phases, when you were confused, stressed… and still,
+                you’ve been so strong in your own way. And honestly, I admire that about you a lot.
+            </p>
+
+            <p>
+                Being with you — even like this — feels easy. I like talking to you, making you smile,
+                and just being there for you.
+            </p>
+
+            <p>
+                I want something real… something calm, something that grows slowly, with trust and understanding.
+            </p>
+
+            <p>
+                And I feel like we’re already building that, in our own way.
+            </p>
+
+            <p>
+                So today, I just want you to be happy… no overthinking, no stress. Just enjoy your day.
+            </p>
+
+            <p>
+                And yeah… I’ll be here, as always 🙂
+            </p>
+
+            <p><strong>Have a beautiful birthday ❤️</strong></p>
+        </div>
+
+        <!-- Add your image here -->
+        <img src="photo.jpg" alt="Our Memory">
+
     </div>
 </div>
 
