@@ -48,14 +48,36 @@
             max-width: 600px;
             margin: auto;
             text-align: left;
-            line-height: 1.6;
+            line-height: 1.7;
             font-size: 18px;
+            white-space: pre-line;
         }
 
+        /* Blinking cursor */
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            background: white;
+            margin-left: 5px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0; }
+        }
+
+        /* Image fade-in */
         img {
             width: 260px;
             border-radius: 15px;
             margin-top: 20px;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        img.show {
+            opacity: 1;
         }
     </style>
 </head>
@@ -63,56 +85,64 @@
 <body>
 
 <div class="container">
-    <h1>Happy Birthday ❤️</h1>
+    <h1>Happy Birthday Neha 🎈💕</h1>
 
-    <button onclick="showSurprise()">Click me💌</button>
+    <button onclick="showSurprise()">Click > 💌</button>
 
     <div id="surprise" class="hidden">
-
-        <div class="message">
-            <p>
-                I don’t know how things became like this… but somewhere between all our random chats,
-                late-night talks, and everything you shared, you became really important to me.
-            </p>
-
-            <p>
-                I’ve seen you at your low phases, when you were confused, stressed… and still,
-                you’ve been so strong in your own way. And honestly, I admire that about you a lot.
-            </p>
-
-            <p>
-                Being with you — even like this — feels easy. I like talking to you, making you smile,
-                and just being there for you.
-            </p>
-
-            <p>
-                I want something real… something calm, something that grows slowly, with trust and understanding.
-            </p>
-
-            <p>
-                And I feel like we’re already building that, in our own way.
-            </p>
-
-            <p>
-                So today, I just want you to be happy… no overthinking, no stress. Just enjoy your day.
-            </p>
-
-            <p>
-                And yeah… I’ll be here, as always 🙂
-            </p>
-
-            <p><strong>Have a beautiful birthday ❤️</strong></p>
-        </div>
-
-        <!-- Add your image here -->
-        <img src="1000046088.jpg" alt="Our Memory">
-
+        <div id="message" class="message"></div>
+        <span id="cursor" class="cursor"></span>
+        <br>
+        <img id="loveImg" src="photo.jpg" alt="Our Memory">
     </div>
 </div>
 
+<!-- Music -->
+<audio id="bgMusic" loop>
+    <source src="song.mp3" type="audio/mpeg">
+</audio>
+
 <script>
+const text = `Happy Birthday Neha  🫶
+
+I don’t know how things became like this… but somewhere between all our random chats, late-night talks, and everything you shared, you became really important to me.
+
+I’ve seen you at your low phases, when you were confused, stressed… and still, you’ve been so strong in your own way. And honestly, I admire that about you a lot.
+
+Being with you — even like this — feels easy. I like talking to you, making you smile, and just being there for you.
+
+I want something real… something calm, something that grows slowly, with trust and understanding.
+
+And I feel like we’re already building that, in our own way.
+
+So today, I just want you to be happy… no overthinking, no stress. Just enjoy your day.
+
+And yeah… I’ll be here, as always 🙂
+
+Have a beautiful birthday ❤️`;
+
+let i = 0;
+
 function showSurprise() {
     document.getElementById("surprise").style.display = "block";
+    document.getElementById("bgMusic").play();
+    typeWriter();
+}
+
+function typeWriter() {
+    if (i < text.length) {
+        document.getElementById("message").innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, 20);
+    } else {
+        // hide cursor after typing finishes
+        document.getElementById("cursor").style.display = "none";
+
+        // show image after slight delay
+        setTimeout(() => {
+            document.getElementById("loveImg").classList.add("show");
+        }, 500);
+    }
 }
 </script>
 
