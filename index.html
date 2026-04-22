@@ -4,24 +4,32 @@
   <meta charset="UTF-8" />
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   />
-  <title>Happy Birthday</title>
+  <title>Happy Birthday ❤️</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js"
+      }
+    }
+  </script>
 
   <style>
     :root {
-      --bg-1: #fff3f8;
-      --bg-2: #ffe4ef;
-      --bg-3: #fff1d9;
-      --pink: #ff7eb6;
-      --pink-soft: #ffb7d5;
-      --gold: #f2c66d;
-      --gold-soft: #ffe7a8;
-      --cream: #fffaf2;
-      --text: #7f4363;
-      --glass: rgba(255, 255, 255, 0.18);
-      --glass-border: rgba(255, 255, 255, 0.35);
-      --shadow: 0 20px 50px rgba(179, 97, 132, 0.18);
+      --bg1: #ffd8eb;
+      --bg2: #c7a6ff;
+      --bg3: #6f4fa8;
+      --glass: rgba(255, 255, 255, 0.14);
+      --glass-strong: rgba(255, 255, 255, 0.22);
+      --border: rgba(255, 255, 255, 0.26);
+      --text: #fff7fd;
+      --pink: #ff8ec3;
+      --pink2: #ffb7dc;
+      --gold: #f5d67b;
+      --shadow: 0 20px 70px rgba(31, 12, 46, 0.28);
     }
 
     * {
@@ -29,228 +37,570 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    html,
-    body {
+    html, body {
       width: 100%;
-      height: 100%;
+      min-height: 100%;
       margin: 0;
-      overflow: hidden;
-      font-family: Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at top left, var(--bg-3), transparent 35%),
-        radial-gradient(circle at top right, #ffd5ea, transparent 28%),
-        linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      padding: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text);
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255,255,255,0.22), transparent 20%),
+        radial-gradient(circle at 85% 20%, rgba(255,192,228,0.22), transparent 18%),
+        radial-gradient(circle at 50% 85%, rgba(255,255,255,0.08), transparent 26%),
+        linear-gradient(145deg, var(--bg1) 0%, #e5b7ff 32%, #a36cf0 62%, var(--bg3) 100%);
     }
 
-    #app {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
+    body.revealed {
+      overflow-y: auto;
     }
 
-    #three-canvas {
-      position: absolute;
+    #scene {
+      position: fixed;
       inset: 0;
+      z-index: 0;
       display: block;
       width: 100%;
       height: 100%;
-      z-index: 0;
     }
 
     .overlay {
-      position: absolute;
-      inset: 0;
+      position: relative;
       z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      pointer-events: none;
+      min-height: 100vh;
+      width: 100%;
     }
 
-    .hero-card {
-      width: min(92vw, 520px);
-      padding: 22px 20px 24px;
-      text-align: center;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border-radius: 28px;
+    .soft-glow {
+      box-shadow:
+        0 0 24px rgba(255, 184, 214, 0.28),
+        0 0 80px rgba(255, 204, 228, 0.08);
+    }
+
+    .glass {
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.22),
+        rgba(255,255,255,0.10)
+      );
+      border: 1px solid rgba(255,255,255,0.26);
       box-shadow: var(--shadow);
-      pointer-events: auto;
+      backdrop-filter: blur(18px) saturate(130%);
+      -webkit-backdrop-filter: blur(18px) saturate(130%);
     }
 
-    .hero-card h1 {
-      margin: 0 0 10px;
-      font-size: clamp(2rem, 5vw, 3.6rem);
-      line-height: 1.05;
-      letter-spacing: 0.02em;
-      color: #a74b79;
-      text-shadow: 0 4px 18px rgba(255, 255, 255, 0.65);
-    }
-
-    .hero-card p {
-      margin: 0 0 18px;
-      font-size: clamp(0.95rem, 2.8vw, 1.1rem);
-      line-height: 1.55;
-      color: #8d5973;
-    }
-
-    .actions {
+    .hero-wrap {
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
+      padding: 22px;
+      position: relative;
     }
 
-    .btn {
-      appearance: none;
-      border: none;
-      outline: none;
+    .hero-panel {
+      width: min(94vw, 560px);
+      border-radius: 30px;
+      padding: 22px 20px 26px;
+      text-align: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .headline {
+      font-size: clamp(2rem, 7vw, 4rem);
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin: 0;
+      text-shadow: 0 8px 34px rgba(255, 255, 255, 0.18);
+    }
+
+    .sub {
+      margin-top: 12px;
+      color: rgba(255,255,255,0.86);
+      font-size: clamp(0.98rem, 2.8vw, 1.08rem);
+      line-height: 1.6;
+    }
+
+    .gift-zone {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 28px;
+      min-height: 260px;
+      perspective: 1200px;
+    }
+
+    .gift-box {
+      position: relative;
+      width: 154px;
+      height: 154px;
+      transform-style: preserve-3d;
       cursor: pointer;
+      filter: drop-shadow(0 28px 48px rgba(0,0,0,0.18));
+      will-change: transform;
+    }
+
+    .box-base {
+      position: absolute;
+      bottom: 0;
+      width: 154px;
+      height: 118px;
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, #ffb7dc, #ff84bf 50%, #f86cb0 100%);
+      box-shadow:
+        inset -10px -12px 25px rgba(255,255,255,0.16),
+        inset 10px 12px 26px rgba(120, 18, 78, 0.14);
+      overflow: hidden;
+    }
+
+    .box-lid {
+      position: absolute;
+      top: 8px;
+      left: -4px;
+      width: 162px;
+      height: 44px;
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, #ffd7ea, #ff96c9 48%, #ff79bc 100%);
+      box-shadow:
+        inset -8px -8px 14px rgba(255,255,255,0.2),
+        inset 8px 8px 18px rgba(137, 26, 88, 0.12);
+      transform-origin: center bottom;
+      z-index: 4;
+    }
+
+    .ribbon-v,
+    .ribbon-h {
+      position: absolute;
+      background: linear-gradient(180deg, #ffeaa0, #f1c85c, #d8ab38);
+      box-shadow: inset 0 0 8px rgba(255,255,255,0.18);
+      z-index: 5;
+    }
+
+    .ribbon-v {
+      width: 26px;
+      height: 154px;
+      left: 64px;
+      top: 0;
+      border-radius: 14px;
+    }
+
+    .ribbon-h {
+      width: 154px;
+      height: 20px;
+      left: 0;
+      top: 24px;
+      border-radius: 12px;
+    }
+
+    .bow {
+      position: absolute;
+      top: -8px;
+      left: 47px;
+      width: 60px;
+      height: 34px;
+      z-index: 6;
+    }
+
+    .bow::before,
+    .bow::after {
+      content: "";
+      position: absolute;
+      width: 28px;
+      height: 26px;
+      border-radius: 50% 50% 50% 10%;
+      background: linear-gradient(145deg, #ffe89c, #f3cb5d, #dca936);
+      top: 2px;
+    }
+
+    .bow::before {
+      left: 3px;
+      transform: rotate(-28deg);
+    }
+
+    .bow::after {
+      right: 3px;
+      transform: scaleX(-1) rotate(-28deg);
+    }
+
+    .bow-center {
+      position: absolute;
+      left: 25px;
+      top: 10px;
+      width: 12px;
+      height: 12px;
       border-radius: 999px;
-      padding: 14px 24px;
-      font-size: 1rem;
-      font-weight: 700;
-      transition: transform 0.2s ease, box-shadow 0.25s ease, opacity 0.25s ease;
-      box-shadow: 0 12px 28px rgba(215, 121, 156, 0.24);
+      background: #f6d56f;
+      box-shadow: 0 0 16px rgba(255, 232, 160, 0.5);
     }
 
-    .btn:hover {
-      transform: translateY(-2px) scale(1.02);
+    .gift-label {
+      margin-top: 18px;
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.02em;
     }
 
-    .btn:active {
-      transform: translateY(1px) scale(0.98);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--pink), #ff9ac7);
+    .music-toggle {
+      position: fixed;
+      top: max(14px, env(safe-area-inset-top));
+      right: 14px;
+      z-index: 12;
+      width: 52px;
+      height: 52px;
+      border: 1px solid rgba(255,255,255,0.24);
+      background: rgba(255,255,255,0.14);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: white;
+      box-shadow: 0 12px 40px rgba(15, 8, 23, 0.22);
+      cursor: pointer;
+      transition: transform 0.25s ease, background 0.25s ease;
     }
 
-    .btn-secondary {
-      background: linear-gradient(135deg, var(--gold-soft), var(--gold));
-      color: #7d5920;
+    .music-toggle:active {
+      transform: scale(0.96);
     }
 
-    .message {
-      margin-top: 16px;
-      min-height: 48px;
-      font-size: clamp(1rem, 2.7vw, 1.08rem);
-      line-height: 1.5;
-      color: #8f4a70;
+    .music-toggle.playing {
+      background: rgba(255,255,255,0.24);
+    }
+
+    .float-bubble {
+      position: fixed;
+      z-index: 4;
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06));
+      border: 1px solid rgba(255,255,255,0.22);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 10px 30px rgba(50, 12, 67, 0.16);
+      display: grid;
+      place-items: center;
+      color: rgba(255,255,255,0.9);
+      font-size: 0.76rem;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .bubble-word {
+      position: fixed;
+      z-index: 8;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.22);
+      backdrop-filter: blur(12px);
+      color: white;
+      font-size: 0.86rem;
+      pointer-events: none;
       opacity: 0;
       transform: translateY(8px);
-      transition: opacity 0.45s ease, transform 0.45s ease;
     }
 
-    .message.show {
+    .letter-section {
+      opacity: 0;
+      transform: translateY(30px);
+      pointer-events: none;
+      padding: 0 16px 60px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .letter-card {
+      width: min(94vw, 860px);
+      margin: 0 auto;
+      border-radius: 30px;
+      padding: 18px;
+    }
+
+    .letter-inner {
+      border-radius: 24px;
+      padding: 22px 16px 24px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+
+    .letter-title {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 16px;
+      color: rgba(255,255,255,0.96);
+    }
+
+    .letter-paragraph {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: all 0.8s ease;
+      line-height: 1.9;
+      font-size: clamp(1rem, 2.8vw, 1.08rem);
+      color: rgba(255,255,255,0.93);
+      margin: 0 0 18px;
+      white-space: pre-wrap;
+    }
+
+    .letter-paragraph.visible {
       opacity: 1;
       transform: translateY(0);
     }
 
-    .hint {
-      position: absolute;
-      left: 50%;
-      bottom: max(16px, env(safe-area-inset-bottom));
-      transform: translateX(-50%);
-      z-index: 2;
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.45);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      font-size: 0.9rem;
-      color: #915472;
-      pointer-events: none;
+    .scroll-shell {
+      position: relative;
+      margin: 0 auto 20px;
+      width: min(84vw, 440px);
+      opacity: 0;
+      transform: translateY(40px) scale(0.96);
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 12px;
+    .scroll-paper {
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,245,251,0.74));
+      color: #6b3956;
+      padding: 18px 18px;
+      box-shadow:
+        0 22px 50px rgba(18, 8, 24, 0.18),
+        inset 0 0 20px rgba(255,255,255,0.4);
+      border: 1px solid rgba(255,255,255,0.45);
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .scroll-rod {
+      height: 14px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.5);
-      color: #a26082;
-      font-size: 0.86rem;
-      font-weight: 700;
-      margin-bottom: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      background: linear-gradient(180deg, #fbe7a0, #d3a443);
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.3);
+    }
+
+    .photo-frame-wrap {
+      margin-top: 28px;
+      display: flex;
+      justify-content: center;
+      perspective: 900px;
+    }
+
+    .photo-frame {
+      width: min(76vw, 260px);
+      padding: 10px;
+      border-radius: 22px;
+      background: linear-gradient(145deg, rgba(255,229,160,0.85), rgba(240,185,91,0.78));
+      box-shadow:
+        0 18px 44px rgba(17,8,28,0.22),
+        inset 0 0 14px rgba(255,255,255,0.34);
+      transform-style: preserve-3d;
+      animation: floatFrame 4.5s ease-in-out infinite;
+    }
+
+    .photo-frame img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 4px solid rgba(255,255,255,0.72);
+    }
+
+    .photo-caption {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.95);
+    }
+
+    .typewriter-cursor::after {
+      content: "|";
+      display: inline-block;
+      margin-left: 2px;
+      animation: blink 0.8s infinite;
+      color: rgba(255,255,255,0.95);
+    }
+
+    .confetti-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 9;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 18px;
+      border-radius: 4px;
+      opacity: 0.95;
+      will-change: transform, opacity;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    @keyframes floatFrame {
+      0%, 100% { transform: rotateY(-6deg) translateY(0px); }
+      50% { transform: rotateY(6deg) translateY(-10px); }
     }
 
     @media (max-width: 640px) {
-      .hero-card {
-        padding: 20px 16px 22px;
+      .hero-panel {
+        padding: 22px 16px 24px;
         border-radius: 24px;
       }
 
-      .btn {
-        width: 100%;
-        max-width: 240px;
+      .gift-box {
+        transform: scale(0.92);
       }
 
-      .hint {
-        font-size: 0.8rem;
-        padding: 9px 14px;
+      .letter-card {
+        padding: 14px;
+        border-radius: 22px;
       }
-    }
 
-    @media (prefers-reduced-motion: reduce) {
-      .btn,
-      .message {
-        transition: none;
+      .letter-inner {
+        padding: 20px 14px 22px;
+        border-radius: 18px;
       }
     }
   </style>
 </head>
 <body>
-  <div id="app">
-    <canvas id="three-canvas"></canvas>
+  <canvas id="scene"></canvas>
 
-    <div class="overlay">
-      <div class="hero-card">
-        <div class="badge">✨ A little 3D birthday surprise</div>
-        <h1>Happy Birthday</h1>
-        <p>
-          Move your mouse or swipe to feel the scene come alive.
-          Then tap the button for the surprise burst.
+  <button id="musicToggle" class="music-toggle" aria-label="Toggle music" title="Toggle music">
+    <svg id="musicIcon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 3v10.55A4 4 0 1 0 14 17V8h4V3h-6z"/>
+    </svg>
+  </button>
+
+  <div id="bubbleWord" class="bubble-word"></div>
+  <div id="confettiLayer" class="confetti-layer"></div>
+
+  <main class="overlay">
+    <section class="hero-wrap">
+      <div class="hero-panel soft-glow">
+        <h1 class="headline">Happy Birthday</h1>
+        <p class="sub">
+          There’s something waiting for you.<br />
+          Tap the gift and let it open slowly ❤️
         </p>
 
-        <div class="actions">
-          <button class="btn btn-primary" id="surpriseBtn">Click Me</button>
-          <button class="btn btn-secondary" id="musicBtn" type="button">Glow Up</button>
+        <div class="gift-zone">
+          <div id="giftBox" class="gift-box" role="button" aria-label="Open gift" tabindex="0">
+            <div id="boxLid" class="box-lid"></div>
+            <div class="box-base"></div>
+            <div class="ribbon-v"></div>
+            <div class="ribbon-h"></div>
+            <div class="bow">
+              <div class="bow-center"></div>
+            </div>
+          </div>
         </div>
 
-        <div class="message" id="message">
-          Wishing you a day full of love, light, laughter, and beautiful memories. 💖
-        </div>
+        <div class="gift-label">Tap to open your letter ✨</div>
       </div>
+    </section>
+
+    <div id="scrollShell" class="scroll-shell">
+      <div class="scroll-rod"></div>
+      <div class="scroll-paper">
+        A letter for you, from my heart.
+      </div>
+      <div class="scroll-rod"></div>
     </div>
 
-    <div class="hint">Drag / move gently for parallax ✨</div>
-  </div>
+    <section id="letterSection" class="letter-section">
+      <div class="letter-card glass">
+        <div class="letter-inner">
+          <div class="letter-title">For You ❤️</div>
+          <div id="paragraphs"></div>
+
+          <div class="photo-frame-wrap">
+            <div class="photo-frame">
+              <img src="./photo.jpg" alt="A special memory" />
+            </div>
+          </div>
+          <div class="photo-caption">A little moment, held close 🤍</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <audio id="bgMusic" loop preload="auto">
+    <!-- Replace with your own hosted instrumental if you want -->
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8d6d1d4ad.mp3?filename=love-ambient-piano-110624.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 
   <script type="module">
-    import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js";
+    import * as THREE from "three";
 
-    const canvas = document.getElementById("three-canvas");
-    const surpriseBtn = document.getElementById("surpriseBtn");
-    const musicBtn = document.getElementById("musicBtn");
-    const messageEl = document.getElementById("message");
+    const sceneCanvas = document.getElementById("scene");
+    const giftBox = document.getElementById("giftBox");
+    const boxLid = document.getElementById("boxLid");
+    const letterSection = document.getElementById("letterSection");
+    const scrollShell = document.getElementById("scrollShell");
+    const paragraphsWrap = document.getElementById("paragraphs");
+    const confettiLayer = document.getElementById("confettiLayer");
+    const bubbleWord = document.getElementById("bubbleWord");
+    const musicToggle = document.getElementById("musicToggle");
+    const bgMusic = document.getElementById("bgMusic");
 
+    const messageParagraphs = [
+`I don’t know exactly when it started becoming this meaningful… but somewhere between all our conversations, your thoughts, your honesty, and the way you let me see the real you, you became very important to me.`,
+
+`What I feel for you was never something random or temporary. It came from the connection I felt with you — the way we talk, the emotional intelligence you carry, and the genuineness you show in the smallest things.`,
+
+`That is what made me admire you.
+That is what made me feel close to you.
+And that is what made me love you.`,
+
+`When I told you that I don’t mind not being your first, and that I just want to be the one who stays till the end, I meant it in every way.`,
+
+`And when you told me that you feel something real between us, that you trust me, that you value what we have, and that you want us to last… that stayed with me deeply.`,
+
+`Because what we have does feel real.
+Not rushed, not forced, not temporary.
+Just something calm, honest, and meaningful — something that slowly grows with trust, care, and understanding.`,
+
+`I know both of us feel the value of this bond.
+And maybe that’s what makes it so special.`,
+
+`So on your birthday, more than anything else, I just want you to feel happy, peaceful, and loved.
+No pressure, no overthinking — just a beautiful day for the beautiful person you are 🌝`,
+
+`Thank you for being you.
+Thank you for trusting me.
+And thank you for letting this bond become something so special to me.`,
+
+`I’ll be here — not just for today, but for all the little moments, the difficult days, the laughter, the silence, and everything in between. 🙂`,
+
+`Have the most beautiful birthday, Nehoos❤️`
+    ];
+
+    let opened = false;
+
+    // -------- Three.js Scene --------
     const renderer = new THREE.WebGLRenderer({
-      canvas,
+      canvas: sceneCanvas,
       antialias: true,
       alpha: true
     });
-
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -263,576 +613,533 @@
       0.1,
       100
     );
-    camera.position.set(0, 0.7, 10.5);
+    camera.position.set(0, 0, 12);
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
-    scene.add(ambientLight);
+    scene.add(new THREE.AmbientLight(0xffffff, 1.4));
 
-    const dirLight = new THREE.DirectionalLight(0xfff0d8, 2.2);
-    dirLight.position.set(5, 6, 7);
+    const dirLight = new THREE.DirectionalLight(0xfff2ff, 2.2);
+    dirLight.position.set(3, 5, 6);
     scene.add(dirLight);
 
-    const pinkLight = new THREE.PointLight(0xff9ec9, 28, 30, 2);
-    pinkLight.position.set(-4, 2, 4);
+    const pinkLight = new THREE.PointLight(0xff8ec3, 28, 30, 2);
+    pinkLight.position.set(-4, 1, 5);
     scene.add(pinkLight);
 
-    const goldLight = new THREE.PointLight(0xffdf8f, 24, 30, 2);
-    goldLight.position.set(4, -1, 5);
+    const goldLight = new THREE.PointLight(0xf7d97a, 22, 30, 2);
+    goldLight.position.set(4, -1, 4);
     scene.add(goldLight);
 
-    const fillLight = new THREE.PointLight(0xffffff, 12, 25, 2);
-    fillLight.position.set(0, 5, -2);
-    scene.add(fillLight);
-
-    // Soft floating sparkles in the background
-    const sparkleGroup = new THREE.Group();
-    scene.add(sparkleGroup);
-
-    const sparkleGeo = new THREE.SphereGeometry(0.03, 10, 10);
-    const sparkleMat = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.8
-    });
-
-    const sparkleCount = 110;
-    const sparkles = [];
-    for (let i = 0; i < sparkleCount; i++) {
-      const s = new THREE.Mesh(sparkleGeo, sparkleMat.clone());
-      s.position.set(
-        (Math.random() - 0.5) * 18,
-        (Math.random() - 0.5) * 12,
-        -6 - Math.random() * 8
-      );
-      s.userData = {
-        phase: Math.random() * Math.PI * 2,
-        speed: 0.4 + Math.random() * 0.6,
-        baseY: s.position.y,
-        baseX: s.position.x
-      };
-      sparkleGroup.add(s);
-      sparkles.push(s);
-    }
-
-    // Main floating scene content
     const world = new THREE.Group();
     scene.add(world);
 
-    const shinyMaterial = (color, metalness = 0.15, roughness = 0.28) =>
+    const shinyMat = (color, metalness = 0.4, roughness = 0.2) =>
       new THREE.MeshPhysicalMaterial({
         color,
         metalness,
         roughness,
-        clearcoat: 0.9,
-        clearcoatRoughness: 0.15,
-        sheen: 0.35,
-        sheenColor: new THREE.Color(0xffffff),
-        reflectivity: 0.7
+        clearcoat: 1,
+        clearcoatRoughness: 0.08,
+        reflectivity: 0.95
       });
 
     // Balloons
+    const balloons = [];
     const balloonGroup = new THREE.Group();
     world.add(balloonGroup);
 
-    function createBalloon(color = 0xff9ac7) {
+    function createBalloon(color) {
       const group = new THREE.Group();
 
-      const balloon = new THREE.Mesh(
+      const body = new THREE.Mesh(
         new THREE.SphereGeometry(0.6, 32, 32),
-        shinyMaterial(color, 0.05, 0.22)
+        shinyMat(color, 0.45, 0.16)
       );
-      balloon.scale.set(0.9, 1.15, 0.9);
-      group.add(balloon);
+      body.scale.set(0.9, 1.18, 0.9);
+      group.add(body);
 
       const knot = new THREE.Mesh(
-        new THREE.ConeGeometry(0.08, 0.14, 12),
-        shinyMaterial(color, 0.05, 0.25)
+        new THREE.ConeGeometry(0.07, 0.16, 14),
+        shinyMat(color, 0.35, 0.22)
       );
       knot.position.y = -0.72;
       knot.rotation.x = Math.PI;
       group.add(knot);
 
-      const stringPoints = [
-        new THREE.Vector3(0, -0.78, 0),
-        new THREE.Vector3(0.05, -1.15, 0.02),
-        new THREE.Vector3(-0.03, -1.6, -0.02),
-        new THREE.Vector3(0.02, -2.1, 0.03)
+      const points = [
+        new THREE.Vector3(0, -0.76, 0),
+        new THREE.Vector3(0.03, -1.1, 0.02),
+        new THREE.Vector3(-0.04, -1.45, -0.01),
+        new THREE.Vector3(0.02, -1.95, 0.03),
       ];
-      const stringCurve = new THREE.CatmullRomCurve3(stringPoints);
-      const stringGeo = new THREE.TubeGeometry(stringCurve, 30, 0.01, 6, false);
-      const stringMat = new THREE.MeshStandardMaterial({
-        color: 0xd4a3b7,
-        roughness: 0.85,
-        metalness: 0.05
-      });
-      const stringMesh = new THREE.Mesh(stringGeo, stringMat);
-      group.add(stringMesh);
-
-      const highlight = new THREE.Mesh(
-        new THREE.SphereGeometry(0.14, 16, 16),
-        new THREE.MeshBasicMaterial({
-          color: 0xffffff,
-          transparent: true,
-          opacity: 0.28
-        })
+      const curve = new THREE.CatmullRomCurve3(points);
+      const tube = new THREE.Mesh(
+        new THREE.TubeGeometry(curve, 24, 0.01, 8, false),
+        new THREE.MeshStandardMaterial({ color: 0xf8d8ef, roughness: 0.85 })
       );
-      highlight.position.set(0.18, 0.18, 0.5);
-      highlight.scale.set(1, 1.3, 0.5);
-      group.add(highlight);
+      group.add(tube);
+
+      const glow = new THREE.Mesh(
+        new THREE.SphereGeometry(0.12, 12, 12),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.33 })
+      );
+      glow.position.set(0.18, 0.18, 0.48);
+      glow.scale.set(1, 1.2, 0.5);
+      group.add(glow);
 
       return group;
     }
 
-    const balloonColors = [
-      0xff8fbc,
-      0xffc2da,
-      0xf4c76d,
-      0xffe7a8,
-      0xf7a8cf,
-      0xf3d28b
+    const balloonColors = [0xff8ec3, 0xffbfdc, 0xf3d57a, 0xe0b2ff, 0xf7a5d1, 0xf7dca0];
+    const positions = [
+      [-4.8, 2.2, -0.8],
+      [-3.2, -0.2, -1.4],
+      [-1.6, 2.9, -0.3],
+      [1.8, 2.4, -0.9],
+      [3.5, 0.2, -1.2],
+      [4.9, 2.8, -1.8]
     ];
 
-    const balloons = [];
-    const balloonPositions = [
-      [-4.4, 1.8, -1.2],
-      [-2.8, -0.2, -0.5],
-      [-1.1, 2.4, 0.8],
-      [1.7, 2.1, 0.2],
-      [3.7, 0.5, -1.0],
-      [4.9, 2.9, -1.6]
-    ];
-
-    balloonPositions.forEach((pos, i) => {
+    positions.forEach((p, i) => {
       const b = createBalloon(balloonColors[i % balloonColors.length]);
-      b.position.set(pos[0], pos[1], pos[2]);
-      b.rotation.z = (Math.random() - 0.5) * 0.25;
+      b.position.set(...p);
       b.userData = {
-        baseY: pos[1],
-        floatOffset: Math.random() * Math.PI * 2,
-        drift: 0.35 + Math.random() * 0.45,
-        rotateSpeed: 0.25 + Math.random() * 0.2
+        baseX: p[0],
+        baseY: p[1],
+        phase: Math.random() * Math.PI * 2,
+        drift: 0.6 + Math.random() * 0.6
       };
       balloonGroup.add(b);
       balloons.push(b);
     });
 
-    // Banner using canvas texture on a curved plane
-    function createTextTexture(text) {
-      const c = document.createElement("canvas");
-      c.width = 1024;
-      c.height = 256;
-      const ctx = c.getContext("2d");
+    // Hearts
+    const heartGroup = new THREE.Group();
+    world.add(heartGroup);
 
-      ctx.clearRect(0, 0, c.width, c.height);
-
-      const grad = ctx.createLinearGradient(0, 0, c.width, 0);
-      grad.addColorStop(0, "#ff7eb6");
-      grad.addColorStop(0.5, "#ffd36f");
-      grad.addColorStop(1, "#ff9fd0");
-
-      ctx.fillStyle = "rgba(255,255,255,0.0)";
-      ctx.fillRect(0, 0, c.width, c.height);
-
-      ctx.shadowColor = "rgba(255,255,255,0.55)";
-      ctx.shadowBlur = 30;
-
-      ctx.font = "bold 110px Arial";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillStyle = grad;
-      ctx.fillText(text, c.width / 2, c.height / 2);
-
-      ctx.lineWidth = 6;
-      ctx.strokeStyle = "rgba(255,255,255,0.6)";
-      ctx.strokeText(text, c.width / 2, c.height / 2);
-
-      const tex = new THREE.CanvasTexture(c);
-      tex.colorSpace = THREE.SRGBColorSpace;
-      return tex;
+    function heartShape() {
+      const shape = new THREE.Shape();
+      shape.moveTo(0, 0.25);
+      shape.bezierCurveTo(0, 0.55, -0.45, 0.75, -0.65, 0.4);
+      shape.bezierCurveTo(-0.85, 0.05, -0.45, -0.25, 0, -0.55);
+      shape.bezierCurveTo(0.45, -0.25, 0.85, 0.05, 0.65, 0.4);
+      shape.bezierCurveTo(0.45, 0.75, 0, 0.55, 0, 0.25);
+      return shape;
     }
 
-    const bannerGroup = new THREE.Group();
-    world.add(bannerGroup);
-
-    const bannerTex = createTextTexture("Happy Birthday");
-    const bannerMat = new THREE.MeshBasicMaterial({
-      map: bannerTex,
-      transparent: true
-    });
-    const bannerMesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(6.2, 1.55, 32, 1),
-      bannerMat
-    );
-    bannerMesh.position.set(0, 3.2, -0.5);
-    bannerGroup.add(bannerMesh);
-
-    const ribbonLeft = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.03, 0.03, 1.2, 8),
-      shinyMaterial(0xe9bfd0, 0.08, 0.35)
-    );
-    ribbonLeft.position.set(-2.85, 3.55, -0.55);
-    ribbonLeft.rotation.z = 0.12;
-    bannerGroup.add(ribbonLeft);
-
-    const ribbonRight = ribbonLeft.clone();
-    ribbonRight.position.set(2.85, 3.55, -0.55);
-    ribbonRight.rotation.z = -0.12;
-    bannerGroup.add(ribbonRight);
-
-    // Floating 3D picture frame with photo.jpg
-    const frameGroup = new THREE.Group();
-    world.add(frameGroup);
-
-    const textureLoader = new THREE.TextureLoader();
-    const photoTexture = textureLoader.load(
-      "./photo.jpg",
-      () => {
-        photoTexture.colorSpace = THREE.SRGBColorSpace;
-      },
-      undefined,
-      () => {
-        console.warn("photo.jpg not found. Keep it in the same folder as index.html");
-      }
-    );
-
-    const photoPlane = new THREE.Mesh(
-      new THREE.PlaneGeometry(2.1, 2.7),
-      new THREE.MeshStandardMaterial({
-        map: photoTexture,
-        roughness: 0.45,
-        metalness: 0.06
-      })
-    );
-
-    const frameOuter = new THREE.Mesh(
-      new THREE.BoxGeometry(2.55, 3.15, 0.2),
-      shinyMaterial(0xf2cc77, 0.4, 0.22)
-    );
-
-    const frameInnerMask = new THREE.Mesh(
-      new THREE.BoxGeometry(2.18, 2.78, 0.24),
-      new THREE.MeshBasicMaterial({ color: 0x000000 })
-    );
-
-    const matte = new THREE.Mesh(
-      new THREE.PlaneGeometry(2.28, 2.88),
-      new THREE.MeshStandardMaterial({
-        color: 0xfffbf5,
-        roughness: 0.9,
-        metalness: 0.02
-      })
-    );
-
-    const glass = new THREE.Mesh(
-      new THREE.PlaneGeometry(2.14, 2.74),
-      new THREE.MeshPhysicalMaterial({
-        color: 0xffffff,
-        transparent: true,
-        opacity: 0.12,
-        roughness: 0.02,
-        transmission: 0.35,
-        thickness: 0.08,
-        clearcoat: 1
-      })
-    );
-
-    frameOuter.position.z = -0.02;
-    matte.position.z = 0.04;
-    photoPlane.position.z = 0.05;
-    glass.position.z = 0.09;
-
-    frameGroup.add(frameOuter);
-    frameGroup.add(matte);
-    frameGroup.add(photoPlane);
-    frameGroup.add(glass);
-
-    frameGroup.position.set(0, 0.2, 1.2);
-    frameGroup.rotation.set(-0.08, 0.12, -0.03);
-
-    // Decorative base glow ring under frame
-    const ring = new THREE.Mesh(
-      new THREE.TorusGeometry(1.95, 0.05, 12, 80),
-      new THREE.MeshBasicMaterial({
-        color: 0xffdba4,
-        transparent: true,
-        opacity: 0.45
-      })
-    );
-    ring.rotation.x = Math.PI / 2.4;
-    ring.position.set(0, -2.15, 0.6);
-    world.add(ring);
-
-    // Hearts / confetti burst particles
-    const burstGroup = new THREE.Group();
-    scene.add(burstGroup);
-
-    const burstParticles = [];
-
-    function createHeartTexture(color = "#ff85b5") {
-      const c = document.createElement("canvas");
-      c.width = 128;
-      c.height = 128;
-      const ctx = c.getContext("2d");
-
-      ctx.clearRect(0, 0, 128, 128);
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.moveTo(64, 104);
-      ctx.bezierCurveTo(20, 76, 16, 38, 40, 28);
-      ctx.bezierCurveTo(54, 22, 63, 33, 64, 42);
-      ctx.bezierCurveTo(65, 33, 74, 22, 88, 28);
-      ctx.bezierCurveTo(112, 38, 108, 76, 64, 104);
-      ctx.fill();
-
-      const tex = new THREE.CanvasTexture(c);
-      tex.colorSpace = THREE.SRGBColorSpace;
-      return tex;
+    const hearts = [];
+    for (let i = 0; i < 24; i++) {
+      const geo = new THREE.ExtrudeGeometry(heartShape(), {
+        depth: 0.08,
+        bevelEnabled: true,
+        bevelSegments: 2,
+        steps: 1,
+        bevelSize: 0.04,
+        bevelThickness: 0.03
+      });
+      const mat = shinyMat(i % 3 === 0 ? 0xff8fc8 : i % 3 === 1 ? 0xf9df80 : 0xf6b8e8, 0.28, 0.2);
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.scale.setScalar(0.28 + Math.random() * 0.18);
+      mesh.position.set(
+        (Math.random() - 0.5) * 12,
+        (Math.random() - 0.5) * 8,
+        -2 - Math.random() * 4
+      );
+      mesh.userData = {
+        baseY: mesh.position.y,
+        baseX: mesh.position.x,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.4 + Math.random() * 0.6,
+        rot: Math.random() * Math.PI
+      };
+      heartGroup.add(mesh);
+      hearts.push(mesh);
     }
 
-    const heartTextures = [
-      createHeartTexture("#ff7eb6"),
-      createHeartTexture("#ffd56e"),
-      createHeartTexture("#ffafcf")
-    ];
+    // Stars / particles
+    const starGroup = new THREE.Group();
+    world.add(starGroup);
 
-    function spawnBurst() {
-      for (let i = 0; i < 80; i++) {
-        const spriteMat = new THREE.SpriteMaterial({
-          map: heartTextures[i % heartTextures.length],
-          transparent: true,
-          opacity: 1
-        });
-
-        const sprite = new THREE.Sprite(spriteMat);
-        sprite.position.set(
-          (Math.random() - 0.5) * 1.5,
-          -0.2 + (Math.random() - 0.5) * 1.0,
-          2 + (Math.random() - 0.5) * 1.2
-        );
-
-        const scale = 0.16 + Math.random() * 0.18;
-        sprite.scale.set(scale, scale, scale);
-
-        const velocity = new THREE.Vector3(
-          (Math.random() - 0.5) * 0.22,
-          0.12 + Math.random() * 0.18,
-          (Math.random() - 0.5) * 0.04
-        );
-
-        const spin = (Math.random() - 0.5) * 0.25;
-
-        sprite.userData = {
-          velocity,
-          life: 1,
-          decay: 0.012 + Math.random() * 0.013,
-          drift: (Math.random() - 0.5) * 0.01,
-          spin
-        };
-
-        burstGroup.add(sprite);
-        burstParticles.push(sprite);
-      }
-
-      // extra confetti squares
-      for (let i = 0; i < 120; i++) {
-        const geom = new THREE.PlaneGeometry(0.08, 0.08);
-        const mat = new THREE.MeshBasicMaterial({
-          color: [0xff7eb6, 0xf2c66d, 0xffffff, 0xffc2da][i % 4],
-          side: THREE.DoubleSide,
-          transparent: true,
-          opacity: 1
-        });
-
-        const confetti = new THREE.Mesh(geom, mat);
-        confetti.position.set(
-          (Math.random() - 0.5) * 1.8,
-          -0.25 + (Math.random() - 0.5) * 1.2,
-          1.8 + (Math.random() - 0.5) * 1.5
-        );
-
-        confetti.rotation.set(
-          Math.random() * Math.PI,
-          Math.random() * Math.PI,
-          Math.random() * Math.PI
-        );
-
-        confetti.userData = {
-          velocity: new THREE.Vector3(
-            (Math.random() - 0.5) * 0.24,
-            0.08 + Math.random() * 0.18,
-            (Math.random() - 0.5) * 0.06
-          ),
-          angular: new THREE.Vector3(
-            (Math.random() - 0.5) * 0.25,
-            (Math.random() - 0.5) * 0.25,
-            (Math.random() - 0.5) * 0.25
-          ),
-          life: 1,
-          decay: 0.011 + Math.random() * 0.015
-        };
-
-        burstGroup.add(confetti);
-        burstParticles.push(confetti);
-      }
+    const stars = [];
+    for (let i = 0; i < 140; i++) {
+      const star = new THREE.Mesh(
+        new THREE.SphereGeometry(0.03, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.75 })
+      );
+      star.position.set(
+        (Math.random() - 0.5) * 18,
+        (Math.random() - 0.5) * 10,
+        -4 - Math.random() * 8
+      );
+      star.userData = {
+        baseY: star.position.y,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.3 + Math.random() * 0.8
+      };
+      starGroup.add(star);
+      stars.push(star);
     }
 
-    // Pointer / parallax
+    // Pointer parallax
     const pointer = { x: 0, y: 0 };
     const targetPointer = { x: 0, y: 0 };
 
-    function updatePointer(clientX, clientY) {
-      targetPointer.x = (clientX / window.innerWidth) * 2 - 1;
-      targetPointer.y = -(clientY / window.innerHeight) * 2 + 1;
+    function setPointer(x, y) {
+      targetPointer.x = (x / window.innerWidth) * 2 - 1;
+      targetPointer.y = -(y / window.innerHeight) * 2 + 1;
     }
 
-    window.addEventListener("mousemove", (e) => {
-      updatePointer(e.clientX, e.clientY);
-    }, { passive: true });
-
+    window.addEventListener("mousemove", (e) => setPointer(e.clientX, e.clientY), { passive: true });
     window.addEventListener("touchmove", (e) => {
-      if (e.touches && e.touches[0]) {
-        updatePointer(e.touches[0].clientX, e.touches[0].clientY);
-      }
+      if (e.touches[0]) setPointer(e.touches[0].clientX, e.touches[0].clientY);
     }, { passive: true });
 
-    // Button actions
-    surpriseBtn.addEventListener("click", () => {
-      spawnBurst();
-      messageEl.classList.add("show");
-
-      // little frame bounce
-      frameGroup.userData.bump = 1;
-    });
-
-    musicBtn.addEventListener("click", () => {
-      // visual mode toggle instead of music: brighter glow
-      const active = musicBtn.dataset.active === "true";
-      musicBtn.dataset.active = (!active).toString();
-
-      if (!active) {
-        pinkLight.intensity = 36;
-        goldLight.intensity = 32;
-        fillLight.intensity = 18;
-        musicBtn.textContent = "Soft Mode";
-      } else {
-        pinkLight.intensity = 28;
-        goldLight.intensity = 24;
-        fillLight.intensity = 12;
-        musicBtn.textContent = "Glow Up";
-      }
-    });
-
-    // Responsive layout adjustments
-    function applyResponsiveScene() {
-      const isMobile = window.innerWidth < 700;
-
-      camera.position.set(0, isMobile ? 0.45 : 0.7, isMobile ? 11.2 : 10.5);
-
-      frameGroup.scale.setScalar(isMobile ? 0.88 : 1);
-      bannerGroup.scale.setScalar(isMobile ? 0.78 : 1);
-
-      bannerGroup.position.y = isMobile ? -0.15 : 0;
-      balloonGroup.scale.setScalar(isMobile ? 0.88 : 1);
-    }
-
-    window.addEventListener("resize", () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      applyResponsiveScene();
-    });
-
-    applyResponsiveScene();
-
-    // Animation loop
     const clock = new THREE.Clock();
 
-    function animate() {
-      requestAnimationFrame(animate);
+    function animateScene() {
+      requestAnimationFrame(animateScene);
       const t = clock.getElapsedTime();
-      const dt = clock.getDelta();
 
-      pointer.x += (targetPointer.x - pointer.x) * 0.06;
-      pointer.y += (targetPointer.y - pointer.y) * 0.06;
+      pointer.x += (targetPointer.x - pointer.x) * 0.05;
+      pointer.y += (targetPointer.y - pointer.y) * 0.05;
 
-      // Parallax motion
-      world.rotation.y = pointer.x * 0.18;
-      world.rotation.x = pointer.y * 0.08;
-
+      world.rotation.y = pointer.x * 0.15;
+      world.rotation.x = pointer.y * 0.06;
       world.position.x = pointer.x * 0.35;
-      world.position.y = pointer.y * 0.18;
-
-      bannerGroup.position.y = Math.sin(t * 1.4) * 0.12;
-      bannerGroup.rotation.z = Math.sin(t * 0.9) * 0.025;
-      bannerMesh.rotation.y = Math.sin(t * 1.1) * 0.05;
-
-      frameGroup.position.y = 0.2 + Math.sin(t * 1.5) * 0.18;
-      frameGroup.rotation.y = 0.12 + pointer.x * 0.18 + Math.sin(t * 0.8) * 0.03;
-      frameGroup.rotation.x = -0.08 + pointer.y * 0.08;
-
-      if (frameGroup.userData.bump && frameGroup.userData.bump > 0) {
-        frameGroup.userData.bump -= dt * 2.4;
-        const b = frameGroup.userData.bump;
-        frameGroup.rotation.z = Math.sin((1 - b) * Math.PI * 4) * 0.06 * b;
-        frameGroup.scale.setScalar(1 + Math.sin((1 - b) * Math.PI) * 0.08);
-      } else {
-        frameGroup.rotation.z += (0 - frameGroup.rotation.z) * 0.08;
-        frameGroup.scale.lerp(new THREE.Vector3(1, 1, 1), 0.08);
-      }
+      world.position.y = pointer.y * 0.22;
 
       balloons.forEach((b, i) => {
-        const d = b.userData;
-        b.position.y = d.baseY + Math.sin(t * d.drift + d.floatOffset) * 0.28;
-        b.position.x += Math.sin(t * 0.12 + i) * 0.0009;
-        b.rotation.z = Math.sin(t * d.rotateSpeed + i) * 0.08 + pointer.x * 0.05;
-        b.rotation.y = Math.cos(t * d.rotateSpeed + i) * 0.08 + pointer.y * 0.04;
+        const u = b.userData;
+        b.position.y = u.baseY + Math.sin(t * u.drift + u.phase) * 0.28;
+        b.position.x = u.baseX + Math.cos(t * 0.35 + i) * 0.12;
+        b.rotation.z = Math.sin(t * 0.7 + i) * 0.06;
+        b.rotation.y = Math.cos(t * 0.6 + i) * 0.08;
       });
 
-      sparkles.forEach((s, i) => {
-        const d = s.userData;
-        s.position.y = d.baseY + Math.sin(t * d.speed + d.phase) * 0.16;
-        s.position.x = d.baseX + Math.cos(t * d.speed * 0.75 + d.phase) * 0.08;
-        s.material.opacity = 0.35 + (Math.sin(t * 2.2 + i) * 0.5 + 0.5) * 0.55;
+      hearts.forEach((h, i) => {
+        const u = h.userData;
+        h.position.y = u.baseY + Math.sin(t * u.speed + u.phase) * 0.18;
+        h.position.x = u.baseX + Math.cos(t * u.speed * 0.8 + u.phase) * 0.08;
+        h.rotation.z += 0.004;
+        h.rotation.y = Math.sin(t * 0.6 + i) * 0.3;
       });
 
-      for (let i = burstParticles.length - 1; i >= 0; i--) {
-        const p = burstParticles[i];
-        const u = p.userData;
-        if (!u) continue;
-
-        p.position.add(u.velocity);
-        u.velocity.y -= 0.004;
-        u.velocity.x += u.drift || 0;
-
-        if (p.isSprite) {
-          p.material.opacity = u.life;
-          p.position.x += Math.sin(t * 4 + i) * 0.002;
-        } else {
-          p.rotation.x += u.angular.x;
-          p.rotation.y += u.angular.y;
-          p.rotation.z += u.angular.z;
-          p.material.opacity = u.life;
-        }
-
-        u.life -= u.decay;
-
-        if (u.life <= 0) {
-          burstGroup.remove(p);
-          if (p.material) p.material.dispose();
-          if (p.geometry) p.geometry.dispose();
-          burstParticles.splice(i, 1);
-        }
-      }
-
-      ring.material.opacity = 0.32 + Math.sin(t * 2.0) * 0.08;
-      ring.rotation.z += 0.0025;
+      stars.forEach((s, i) => {
+        const u = s.userData;
+        s.position.y = u.baseY + Math.sin(t * u.speed + u.phase) * 0.12;
+        s.material.opacity = 0.25 + (Math.sin(t * 2 + i) * 0.5 + 0.5) * 0.65;
+      });
 
       renderer.render(scene, camera);
     }
 
-    animate();
+    animateScene();
+
+    function resize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      camera.position.z = window.innerWidth < 640 ? 13 : 12;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    // -------- Floating memory bubbles --------
+    const bubbleWords = ["Honesty", "Trust", "Peace", "Care", "Us", "Real", "Warmth"];
+    const bubbles = [];
+
+    function createMemoryBubbles() {
+      bubbleWords.forEach((word, i) => {
+        const el = document.createElement("div");
+        el.className = "float-bubble";
+        el.dataset.word = word;
+        el.innerHTML = "✦";
+        document.body.appendChild(el);
+
+        const bubble = {
+          el,
+          x: Math.random() * (window.innerWidth - 70) + 10,
+          y: Math.random() * (window.innerHeight - 120) + 60,
+          dx: (Math.random() - 0.5) * 0.35,
+          dy: (Math.random() - 0.5) * 0.35,
+          phase: Math.random() * Math.PI * 2
+        };
+
+        el.addEventListener("click", (e) => {
+          showBubbleWord(word, e.clientX || bubble.x, e.clientY || bubble.y);
+        });
+
+        bubbles.push(bubble);
+      });
+    }
+
+    function showBubbleWord(word, x, y) {
+      bubbleWord.textContent = word;
+      bubbleWord.style.left = `${x - 20}px`;
+      bubbleWord.style.top = `${y - 46}px`;
+      gsap.killTweensOf(bubbleWord);
+      gsap.set(bubbleWord, { opacity: 1, y: 0 });
+      gsap.fromTo(
+        bubbleWord,
+        { opacity: 0, y: 8, scale: 0.95 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.35,
+          ease: "power2.out",
+          onComplete: () => {
+            gsap.to(bubbleWord, {
+              opacity: 0,
+              y: -12,
+              delay: 1.1,
+              duration: 0.45
+            });
+          }
+        }
+      );
+    }
+
+    function animateBubbles() {
+      bubbles.forEach((b, i) => {
+        b.x += b.dx + Math.sin(Date.now() * 0.001 + b.phase) * 0.08;
+        b.y += b.dy + Math.cos(Date.now() * 0.0012 + b.phase) * 0.08;
+
+        if (b.x < 8 || b.x > window.innerWidth - 60) b.dx *= -1;
+        if (b.y < 56 || b.y > window.innerHeight - 60) b.dy *= -1;
+
+        b.el.style.transform = `translate3d(${b.x}px, ${b.y}px, 0)`;
+      });
+      requestAnimationFrame(animateBubbles);
+    }
+
+    createMemoryBubbles();
+    animateBubbles();
+
+    // -------- Music --------
+    musicToggle.addEventListener("click", async () => {
+      try {
+        if (bgMusic.paused) {
+          await bgMusic.play();
+          musicToggle.classList.add("playing");
+        } else {
+          bgMusic.pause();
+          musicToggle.classList.remove("playing");
+        }
+      } catch (e) {
+        console.log("Music autoplay blocked until user interaction.");
+      }
+    });
+
+    // -------- Confetti --------
+    function createConfettiBurst() {
+      const colors = ["#ff8ec3", "#ffd86b", "#ffffff", "#ffbedd", "#ead1ff"];
+      for (let i = 0; i < 120; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.style.left = `${window.innerWidth / 2}px`;
+        c.style.top = `${window.innerHeight / 2}px`;
+        c.style.background = colors[i % colors.length];
+        c.style.width = `${8 + Math.random() * 8}px`;
+        c.style.height = `${12 + Math.random() * 12}px`;
+        confettiLayer.appendChild(c);
+
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 120 + Math.random() * 260;
+        const x = Math.cos(angle) * distance;
+        const y = Math.sin(angle) * distance - 100;
+        const rot = (Math.random() - 0.5) * 720;
+
+        gsap.fromTo(
+          c,
+          { x: 0, y: 0, rotate: 0, opacity: 1, scale: 1 },
+          {
+            x,
+            y: y + 280,
+            rotate: rot,
+            opacity: 0,
+            scale: 0.8,
+            duration: 2.2 + Math.random() * 1.2,
+            ease: "power2.out",
+            onComplete: () => c.remove()
+          }
+        );
+      }
+    }
+
+    // -------- Typewriter --------
+    function typeParagraph(el, text, speed = 18) {
+      return new Promise((resolve) => {
+        let i = 0;
+        el.classList.add("visible", "typewriter-cursor");
+        const timer = setInterval(() => {
+          el.textContent = text.slice(0, i);
+          i++;
+          if (i > text.length) {
+            clearInterval(timer);
+            el.classList.remove("typewriter-cursor");
+            resolve();
+          }
+        }, speed);
+      });
+    }
+
+    // -------- Build letter --------
+    function buildParagraphs() {
+      paragraphsWrap.innerHTML = "";
+      messageParagraphs.forEach((p, index) => {
+        const el = document.createElement("p");
+        el.className = "letter-paragraph";
+        el.dataset.index = index;
+        paragraphsWrap.appendChild(el);
+      });
+    }
+
+    buildParagraphs();
+
+    async function revealFirstParagraph() {
+      const first = document.querySelector('.letter-paragraph[data-index="0"]');
+      await typeParagraph(first, messageParagraphs[0], 16);
+    }
+
+    function setupScrollReveal() {
+      const els = [...document.querySelectorAll(".letter-paragraph")];
+      const observer = new IntersectionObserver(
+        async (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              const el = entry.target;
+              const index = Number(el.dataset.index);
+              if (el.dataset.done === "true") continue;
+              el.dataset.done = "true";
+
+              if (index === 0 && el.textContent.trim()) {
+                el.classList.add("visible");
+              } else {
+                await typeParagraph(el, messageParagraphs[index], 13);
+              }
+
+              observer.unobserve(el);
+            }
+          }
+        },
+        { threshold: 0.24 }
+      );
+
+      els.slice(1).forEach(el => observer.observe(el));
+    }
+
+    // -------- Gift open animation --------
+    function openGift() {
+      if (opened) return;
+      opened = true;
+      document.body.classList.add("revealed");
+
+      if (navigator.vibrate) {
+        navigator.vibrate([80, 40, 120]);
+      }
+
+      try {
+        bgMusic.play();
+        musicToggle.classList.add("playing");
+      } catch (e) {}
+
+      createConfettiBurst();
+
+      // Balloon reaction
+      gsap.to(balloonGroup.rotation, {
+        z: 0.12,
+        duration: 0.3,
+        yoyo: true,
+        repeat: 1,
+        ease: "power2.inOut"
+      });
+      gsap.to(balloonGroup.position, {
+        y: 0.5,
+        duration: 0.4,
+        yoyo: true,
+        repeat: 1,
+        ease: "power2.out"
+      });
+
+      // Gift box sequence
+      const tl = gsap.timeline();
+
+      tl.to(giftBox, {
+        x: -4,
+        y: 0,
+        rotateZ: -2,
+        duration: 0.08,
+        repeat: 5,
+        yoyo: true,
+        ease: "power1.inOut"
+      })
+      .to(giftBox, {
+        scale: 1.05,
+        duration: 0.18,
+        ease: "back.out(2)"
+      })
+      .to(boxLid, {
+        y: -90,
+        x: 50,
+        rotation: 26,
+        duration: 0.75,
+        ease: "power3.out"
+      }, "-=0.05")
+      .to(".gift-label", {
+        opacity: 0,
+        y: -10,
+        duration: 0.3
+      }, "<")
+      .to(scrollShell, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.9,
+        ease: "power3.out"
+      }, "-=0.2")
+      .to(letterSection, {
+        opacity: 1,
+        y: 0,
+        pointerEvents: "auto",
+        duration: 1,
+        ease: "power2.out"
+      }, "-=0.2")
+      .add(() => {
+        setTimeout(() => {
+          letterSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 200);
+      })
+      .add(async () => {
+        await revealFirstParagraph();
+        setupScrollReveal();
+      });
+
+      gsap.to(".hero-panel", {
+        opacity: 0.45,
+        scale: 0.96,
+        duration: 1.2,
+        ease: "power2.out"
+      });
+    }
+
+    giftBox.addEventListener("click", openGift);
+    giftBox.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openGift();
+      }
+    });
+
+    // Idle shake
+    gsap.to(giftBox, {
+      rotateZ: 1.2,
+      y: -6,
+      duration: 1.4,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut"
+    });
   </script>
 </body>
 </html>
